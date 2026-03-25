@@ -29,8 +29,8 @@ const authenticateAdmin = (req: any, res: any, next: any) => {
   }
 };
 
-// Admin Login Route
-app.post('/api/admin/login', (req, res) => {
+// Admin Login Function
+function handleAdminLogin(req: any, res: any) {
   const { username, password } = req.body;
 
   if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
@@ -45,7 +45,10 @@ app.post('/api/admin/login', (req, res) => {
   }
 
   res.status(401).json({ error: 'Invalid credentials' });
-});
+}
+
+// Admin Login Route
+app.post('/api/admin/login', handleAdminLogin);
 
 // Admin Logout Route
 app.post('/api/admin/logout', (req, res) => {
