@@ -657,8 +657,12 @@ export default function App() {
   const checkAuth = async () => {
     try {
       const res = await fetch('/api/admin/check');
-      const data = await res.json();
-      setIsAdmin(data.authenticated);
+      if (res.ok) {
+        const data = await res.json();
+        setIsAdmin(data.authenticated);
+      } else {
+        setIsAdmin(false);
+      }
     } catch (err) {
       setIsAdmin(false);
     } finally {
@@ -671,7 +675,11 @@ export default function App() {
   }, []);
 
   const handleLogout = async () => {
-    await fetch('/api/admin/logout', { method: 'POST' });
+    try {
+      await fetch('/api/admin/logout', { method: 'POST' });
+    } catch (e) {
+      // Ignore errors
+    }
     setIsAdmin(false);
   };
 

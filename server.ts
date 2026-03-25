@@ -32,14 +32,12 @@ const PORT = 3000;
 app.use(express.json());
 app.use(cookieParser());
 
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password123';
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
+const ADMIN_USERNAME = 'kaislingpong';
+const ADMIN_PASSWORD = 'kais100100';
+const JWT_SECRET = process.env.JWT_SECRET || 'kais-secret-key-2026';
 
 console.log(`--- Final Config ---`);
-console.log(`Admin Username: "${ADMIN_USERNAME}"`);
-console.log(`Admin Password Length: ${ADMIN_PASSWORD?.length}`);
-console.log(`JWT Secret Length: ${JWT_SECRET?.length}`);
+console.log(`Admin Portal Initialized`);
 console.log(`----------------------`);
 
 if (!process.env.ADMIN_PASSWORD) {
@@ -64,14 +62,6 @@ const authenticateAdmin = (req: any, res: any, next: any) => {
 // Admin Login Route
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
-
-  console.log(`--- Login Attempt ---`);
-  console.log(`Username provided: "${username}"`);
-  console.log(`Username expected: "${ADMIN_USERNAME}"`);
-  console.log(`Password provided length: ${password?.length}`);
-  console.log(`Password expected length: ${ADMIN_PASSWORD?.length}`);
-  console.log(`Match: ${username === ADMIN_USERNAME && password === ADMIN_PASSWORD}`);
-  console.log(`----------------------`);
 
   if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
     const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '1d' });
