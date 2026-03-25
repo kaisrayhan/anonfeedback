@@ -32,9 +32,9 @@ const PORT = 3000;
 app.use(express.json());
 app.use(cookieParser());
 
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password123';
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key';
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'kaislingpong';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'kais100100';
+const JWT_SECRET = process.env.JWT_SECRET || 'kais-secret-key-2026';
 
 console.log(`--- Final Config ---`);
 console.log(`Admin Portal Initialized`);
