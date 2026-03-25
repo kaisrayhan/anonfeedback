@@ -32,9 +32,9 @@ const PORT = 3000;
 app.use(express.json());
 app.use(cookieParser());
 
-const ADMIN_USERNAME = 'kaislingpong';
-const ADMIN_PASSWORD = 'kais100100';
-const JWT_SECRET = process.env.JWT_SECRET || 'kais-secret-key-2026';
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password123';
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key';
 
 console.log(`--- Final Config ---`);
 console.log(`Admin Portal Initialized`);
@@ -96,24 +96,28 @@ app.get('/api/admin/check', (req, res) => {
   }
 });
 
-async function startServer() {
-  if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
+export default app;
+
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  async function startServer() {
+    if (process.env.NODE_ENV !== 'production') {
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: 'spa',
+      });
+      app.use(vite.middlewares);
+    } else {
+      const distPath = path.join(process.cwd(), 'dist');
+      app.use(express.static(distPath));
+      app.get('*', (req, res) => {
+        res.sendFile(path.join(distPath, 'index.html'));
+      });
+    }
+
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running on http://localhost:${PORT}`);
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+  startServer();
 }
-
-startServer();
