@@ -1,11 +1,30 @@
+import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+
+const envPath = path.join(process.cwd(), '.env');
+const envExists = fs.existsSync(envPath);
+console.log(`--- Startup Debug ---`);
+console.log(`Current working directory: ${process.cwd()}`);
+console.log(`.env file exists: ${envExists}`);
+if (envExists) {
+  const result = dotenv.config({ override: true });
+  if (result.error) {
+    console.error('Dotenv error:', result.error);
+  } else {
+    console.log('Dotenv loaded successfully (with override)');
+    console.log('Keys loaded:', Object.keys(result.parsed || {}));
+  }
+} else {
+  console.warn('.env file not found at root.');
+}
+console.log(`----------------------`);
+
 import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const app = express();
 const PORT = 3000;
@@ -16,6 +35,18 @@ app.use(cookieParser());
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password123';
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
+
+console.log(`--- Final Config ---`);
+console.log(`Admin Username: "${ADMIN_USERNAME}"`);
+console.log(`Admin Password Length: ${ADMIN_PASSWORD?.length}`);
+console.log(`JWT Secret Length: ${JWT_SECRET?.length}`);
+console.log(`----------------------`);
+
+if (!process.env.ADMIN_PASSWORD) {
+  console.warn('WARNING: ADMIN_PASSWORD not found in environment. Using default fallback.');
+} else {
+  console.log('SUCCESS: ADMIN_PASSWORD loaded from environment.');
+}
 
 // Admin Auth Middleware
 const authenticateAdmin = (req: any, res: any, next: any) => {
@@ -33,6 +64,14 @@ const authenticateAdmin = (req: any, res: any, next: any) => {
 // Admin Login Route
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
+
+  console.log(`--- Login Attempt ---`);
+  console.log(`Username provided: "${username}"`);
+  console.log(`Username expected: "${ADMIN_USERNAME}"`);
+  console.log(`Password provided length: ${password?.length}`);
+  console.log(`Password expected length: ${ADMIN_PASSWORD?.length}`);
+  console.log(`Match: ${username === ADMIN_USERNAME && password === ADMIN_PASSWORD}`);
+  console.log(`----------------------`);
 
   if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
     const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '1d' });
