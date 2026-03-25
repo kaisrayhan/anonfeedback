@@ -1,26 +1,5 @@
-import dotenv from 'dotenv';
-import fs from 'fs';
-import path from 'path';
-
-const envPath = path.join(process.cwd(), '.env');
-const envExists = fs.existsSync(envPath);
-console.log(`--- Startup Debug ---`);
-console.log(`Current working directory: ${process.cwd()}`);
-console.log(`.env file exists: ${envExists}`);
-if (envExists) {
-  const result = dotenv.config({ override: true });
-  if (result.error) {
-    console.error('Dotenv error:', result.error);
-  } else {
-    console.log('Dotenv loaded successfully (with override)');
-    console.log('Keys loaded:', Object.keys(result.parsed || {}));
-  }
-} else {
-  console.warn('.env file not found at root.');
-}
-console.log(`----------------------`);
-
 import express from 'express';
+import path from 'path';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 
@@ -30,19 +9,12 @@ const PORT = 3000;
 app.use(express.json());
 app.use(cookieParser());
 
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'kaislingpong';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'kais100100';
-const JWT_SECRET = process.env.JWT_SECRET || 'kais-secret-key-2026';
+// Static Credentials
+const ADMIN_USERNAME = 'kaislingpong';
+const ADMIN_PASSWORD = 'kais100100';
+const JWT_SECRET = 'kais-secret-key-2026';
 
-console.log(`--- Final Config ---`);
-console.log(`Admin Portal Initialized`);
-console.log(`----------------------`);
-
-if (!process.env.ADMIN_PASSWORD) {
-  console.warn('WARNING: ADMIN_PASSWORD not found in environment. Using default fallback.');
-} else {
-  console.log('SUCCESS: ADMIN_PASSWORD loaded from environment.');
-}
+console.log(`--- Admin Portal Initialized (Static Mode) ---`);
 
 // Admin Auth Middleware
 const authenticateAdmin = (req: any, res: any, next: any) => {
